@@ -14,4 +14,4 @@
    - { role: node, when: nodejs }
    - docker
    - { role: awscli, when: awscli }
- 
+   - terraform
