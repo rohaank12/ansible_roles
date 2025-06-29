@@ -1,0 +1,33 @@
+
+# Ansible role to install Docker & Trivy        #
+# --------------------------------------------- #
+- name: Update Cache 
+  package: update_cache=yes
+
+- name: Install Docker Daemon & dependencies for Trivy
+  package: name={{ item }} state=present
+  loop:  [ 'docker.io', 'curl', 'gnupg', 'lsb-release' ]
+
+- name: Start Docker Service  # Start Docker Daemon #
+  service: name=docker state=started
+
+- name: Permission for user   # Allow to run Docker #
+  user: name={{demouser}} group=docker
+
+- name: Download Trivy binary from GitHub
+  get_url:
+   url: "https://github.com/aquasecurity/trivy/releases/download/v0.25.0/trivy_0.25.0_Linux-64bit.tar.gz"
+   dest: "/tmp/trivy.tar.gz"
+
+- name: Extract Trivy package
+  unarchive:
+    src: "/tmp/trivy.tar.gz"
+    dest: "/usr/local/bin/"
+    remote_src: yes
+
+- name: Clean up downloaded tarball
+  file:
+    path: "/tmp/trivy.tar.gz"
+    state: absent
+
+

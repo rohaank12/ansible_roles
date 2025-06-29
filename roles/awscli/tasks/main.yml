@@ -1,0 +1,30 @@
+
+# Ansible role to AWS cli                       #
+# --------------------------------------------- #
+
+- name: Install python3-pip and python3-venv
+  apt:
+    name:
+       - python3-pip
+       - python3-venv
+    state: present
+    update_cache: yes
+
+- name: Check if virtual environment directory exists
+  stat:
+    path: /opt/awscli-venv
+  register: venv_stat
+
+- name: Create a virtual environment for AWS CLI if not already created
+  command: python3 -m venv /opt/awscli-venv
+  when: not venv_stat.stat.exists
+
+- name: Install AWS CLI in the virtual environment
+  pip:
+    name: awscli
+    virtualenv: /opt/awscli-venv
+    state: latest
+
+- name: Ensure AWS CLI is available in the virtual environment
+  command: /opt/awscli-venv/bin/aws --version
+  register: aws_version

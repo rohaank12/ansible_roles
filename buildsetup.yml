@@ -1,0 +1,17 @@
+
+# Setup Build server for SpringBoot & Node microservice #
+# ----------------------------------------------------- #
+
+---
+- hosts: localhost
+  become: yes
+  vars:
+    springboot: false
+    nodejs: false
+    awscli: false
+  roles:
+   - { role: maven, when: springboot }
+   - { role: node, when: nodejs }
+   - docker
+   - { role: awscli, when: awscli }
+ 

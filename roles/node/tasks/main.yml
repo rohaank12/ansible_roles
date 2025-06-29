@@ -1,0 +1,10 @@
+
+
+  - name: Apt Update
+    apt: update_cache=yes
+  - name : Install JRE, npm & Git
+    apt: name={{item}} state=present
+    loop:
+    - git
+    - openjdk-17-jre
+    - npm
